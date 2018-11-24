@@ -3,7 +3,11 @@ require 'game'
 
 describe Game do
 
-  subject(:game) { described_class.new }
+  subject(:game) { described_class.new(deck) }
+  let(:deck) { double :deck, cards: [card, card, card, card] }
+  let(:card) { double :card, rank: "Two", suit: "Hearts" }
+  let(:card2) { double :card, rank: "King", suit: "Hearts" }
+  let(:card3) { double :card, rank: "Ace", suit: "Hearts" }
 
   describe '#initialize' do
 
@@ -13,7 +17,8 @@ describe Game do
     end
 
     it 'initializes with a deck of 52 cards' do
-      expect(game.deck.size).to eq(52)
+      # expect(game.deck.size).to eq(52)
+      expect(game.deck.size).to eq(4)
     end
   end
 
@@ -27,6 +32,18 @@ describe Game do
     end
 
   end
+
+
+  describe '#calculate_score' do
+
+    it 'calculates the score of a hand at any given time' do
+      allow(card).to receive(:value).and_return(2)
+      game.deal_first_hand
+      expect(game.calculate_score(game.sam)).to eq(4)
+    end
+  end
+
+
 
 
 end
