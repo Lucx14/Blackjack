@@ -4,57 +4,59 @@ require './lib/player'
 class Game
 
   BLACKJACK = 21
-  attr_reader :sam, :dealer, :deck
+  PLAYER_RISK_LEVEL = 17
 
-  def initialize(deck = Deck.new, sam = Player.new, dealer = Player.new)
-    @sam = sam
+  attr_reader :player, :dealer, :deck
+
+  def initialize(deck = Deck.new, player = Player.new("Sam"), dealer = Player.new("Dealer"))
+    @player = player
     @dealer = dealer
     @deck = deck.cards
   end
 
-  def deal_first_hand
-    2.times { sam.hit(deck.shift) }
-    2.times { dealer.hit(deck.shift) }
-    p "Sam has a score of #{sam.score}"
-    p "dealer has a score of #{dealer.score}"
-    if blackjack?(sam)
-      "Blackjack! Sam wins!"
-    elsif blackjack?(dealer)
-      "Blackjack! Dealer wins"
-    elsif bust?(sam)
-      "Dealer wins!"
-    elsif bust?(dealer)
-      "Sam wins!"
-    end
+  def play
+    deal
+    determine_blackjack(player)
+    determine_blackjack(dealer)
+    determine_bust(player)
+    determine_bust(dealer)
+    print_scores
   end
 
   def player_turn
-    while sam.score < 17
-      sam.hit(deck.shift)
+    while player.score < PLAYER_RISK_LEVEL
+      player.hit(deck.shift)
     end
-    p "Sam has a score of #{sam.score}"
-    p "dealer has a score of #{dealer.score}"
-    if blackjack?(sam)
-      "Blackjack! Sam wins!"
-    elsif bust?(sam)
-      "Dealer wins!"
-    end
+    determine_blackjack(player)
+    determine_bust(player)
+    print_scores
   end
 
   def dealer_turn
-    while dealer.score < sam.score
+    while dealer.score < player.score
       dealer.hit(deck.shift)
     end
-    p "Sam has a score of #{sam.score}"
-    p "dealer has a score of #{dealer.score}"
-    if blackjack?(dealer)
-      "Blackjack! Dealer wins!"
-    elsif bust?(dealer)
-      "Sam wins!"
-    end
+    determine_blackjack(dealer)
+    determine_bust(dealer)
+    print_scores
   end
 
+  def deal
+    2.times { player.hit(deck.shift) }
+    2.times { dealer.hit(deck.shift) }
+  end
+  
+  def print_scores
+    "Score: #{player.name}: #{player.score}, #{dealer.name}: #{dealer.score}"
+  end
 
+  def determine_blackjack(player)
+    "Blackjack! #{player.name} wins!" if blackjack?(player)
+  end
+
+  def determine_bust(player)
+    "Game over! #{player.name} busted!" if bust?(player)
+  end
 
   private
 
@@ -65,6 +67,4 @@ class Game
   def bust?(player)
     player.score > BLACKJACK
   end
-
-
 end
