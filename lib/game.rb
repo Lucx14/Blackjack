@@ -1,75 +1,69 @@
 require './lib/deck'
+require './lib/player'
 
 class Game
 
   BLACKJACK = 21
   attr_reader :sam, :dealer, :deck
 
-  def initialize(deck = Deck.new)
-    @sam = []
-    @dealer = []
+  def initialize(deck = Deck.new, sam = Player.new, dealer = Player.new)
+    @sam = sam
+    @dealer = dealer
     @deck = deck.cards
   end
 
   def deal_first_hand
-    2.times { sam.push(deck.shift) }
-    2.times { dealer.push(deck.shift) }
-    p "Sam has a score of #{self.calculate_score(self.sam)}"
-    p "dealer has a score of #{self.calculate_score(self.dealer)}"
-    if blackjack?(self.sam)
+    2.times { sam.hit(deck.shift) }
+    2.times { dealer.hit(deck.shift) }
+    p "Sam has a score of #{sam.score}"
+    p "dealer has a score of #{dealer.score}"
+    if blackjack?(sam)
       "Blackjack! Sam wins!"
-    elsif blackjack?(self.dealer)
+    elsif blackjack?(dealer)
       "Blackjack! Dealer wins"
-    elsif bust?(self.sam)
+    elsif bust?(sam)
       "Dealer wins!"
-    elsif bust?(self.dealer)
+    elsif bust?(dealer)
       "Sam wins!"
     end
   end
 
   def player_turn
-    while self.calculate_score(self.sam) < 17
-      sam.push(deck.shift)
+    while sam.score < 17
+      sam.hit(deck.shift)
     end
-    p "Sam has a score of #{self.calculate_score(self.sam)}"
-    p "dealer has a score of #{self.calculate_score(self.dealer)}"
-    if blackjack?(self.sam)
+    p "Sam has a score of #{sam.score}"
+    p "dealer has a score of #{dealer.score}"
+    if blackjack?(sam)
       "Blackjack! Sam wins!"
-    elsif bust?(self.sam)
+    elsif bust?(sam)
       "Dealer wins!"
     end
   end
 
   def dealer_turn
-    while self.calculate_score(self.dealer) < self.calculate_score(self.sam)
-      dealer.push(deck.shift)
+    while dealer.score < sam.score
+      dealer.hit(deck.shift)
     end
-    p "Sam has a score of #{self.calculate_score(self.sam)}"
-    p "dealer has a score of #{self.calculate_score(self.dealer)}"
-    if blackjack?(self.dealer)
+    p "Sam has a score of #{sam.score}"
+    p "dealer has a score of #{dealer.score}"
+    if blackjack?(dealer)
       "Blackjack! Dealer wins!"
-    elsif bust?(self.dealer)
+    elsif bust?(dealer)
       "Sam wins!"
     end
   end
 
 
 
-# Hit
-# stand
-  def calculate_score(hand)
-    (hand.map { |x| x.value }).reduce(:+)
-  end
-
-
   private
 
-  def blackjack?(hand)
-    calculate_score(hand) == BLACKJACK
+  def blackjack?(player)
+    player.score == BLACKJACK
   end
 
-  def bust?(hand)
-    calculate_score(hand) > BLACKJACK
+  def bust?(player)
+    player.score > BLACKJACK
   end
 
 

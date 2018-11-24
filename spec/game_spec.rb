@@ -11,9 +11,9 @@ describe Game do
 
   describe '#initialize' do
 
-    it 'initializes with 2 players with no cards - empty arrays' do
-      expect(game.sam).to eq([])
-      expect(game.dealer).to eq([])
+    it 'initializes with 2 players' do
+      expect(game.sam).to be_a(Player)
+      expect(game.dealer).to be_a(Player)
     end
 
     it 'initializes with a deck of 52 cards' do
@@ -27,8 +27,9 @@ describe Game do
   describe '#deal_first_hand' do
 
     it 'deals 2 cards to each player' do
+      allow(card).to receive(:value).and_return(2)
       game.deal_first_hand
-      expect(game.sam.size).to eq 2
+      expect(game.sam.hand.size).to eq 2
     end
 
   end
@@ -39,7 +40,7 @@ describe Game do
     it 'calculates the score of a hand at any given time' do
       allow(card).to receive(:value).and_return(2)
       game.deal_first_hand
-      expect(game.calculate_score(game.sam)).to eq(4)
+      expect(game.sam.score).to eq(4)
     end
   end
 
