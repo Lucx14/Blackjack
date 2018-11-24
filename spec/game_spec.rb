@@ -13,8 +13,20 @@ describe Game do
     end
 
     it 'initializes with a deck of 52 cards' do
-      expect(game.deck.cards.size).to eq(52)
+      expect(game.deck.size).to eq(52)
+    end
+  end
+
+
+
+  describe '#deal_first_hand' do
+
+    it 'deals 2 cards to each player' do
+      game.deal_first_hand
+      expect(game.sam.size).to eq 2
     end
 
   end
+
+
 end
