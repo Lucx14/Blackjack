@@ -23,6 +23,7 @@ class Game
 
   def player_turn
     raise 'Game is over, Please start a new game.' if game_over?
+
     while player.score < PLAYER_RISK_LEVEL
       player.hit(deck.shift)
     end
@@ -31,6 +32,7 @@ class Game
 
   def dealer_turn
     raise 'Game is over, Please start a new game.' if game_over?
+    
     while dealer.score <= player.score
       dealer.hit(deck.shift)
     end
