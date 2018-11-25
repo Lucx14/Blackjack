@@ -7,16 +7,7 @@ describe Player do
   let(:card2) { double :card, rank: "King", suit: "Hearts" }
   let(:card3) { double :card, rank: "Ace", suit: "Hearts" }
 
-  describe '#initialize' do
-    it 'initializes with no cards - empty array' do
-      expect(player.hand).to eq([])
-    end
-    it 'initializes with a player name' do
-      expect(player.name).to eq("Luc")
-    end
-  end
-
-  describe '#calculate_score' do
+  describe '#score' do
     it 'calculates the score of the players current hand' do
       allow(card).to receive(:value).and_return(2)
       player.hit(card)
@@ -29,6 +20,7 @@ describe Player do
     it 'adds a card to the players hand' do
       player.hit('Hello')
       expect(player.hand.size).to eq 1
+      expect(player.hand[0]).to eq "Hello"
     end
   end
 
